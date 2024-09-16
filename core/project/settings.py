@@ -7,7 +7,7 @@ PROJECT_DIR = Path(__file__).resolve().parent
 
 SECRET_KEY = config('SECRET_KEY')
 
-DEBUG = 'True'
+DEBUG = False
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='.vercel.app,127.0.0.1,.com').split(',')
 

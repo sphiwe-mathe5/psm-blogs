@@ -53,7 +53,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-
+credentials.json
 *.mo
 
 instance/
@@ -106,4 +106,5 @@ dmypy.json
 cython_debug/
 
 .vscode/
+core/credential.json
 core/credential.json
