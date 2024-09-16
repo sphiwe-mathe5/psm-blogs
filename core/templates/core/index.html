@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrettySweetMessages</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="icon" href="{% static 'images/pageicon.jpg' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baskervville+SC&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="header">
+    <nav class="navbar">
+        <a class="navbar-brand" href="{% url 'index' %}">PrettySweetMessages</a>
+        <ul class="navbar-nav" id="nav-links">
+            <li class="nav-item"><a class="nav-link" href="{% url 'competition_list' %}">Competitions</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Category</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for category in categories %}
+                        <li><a class="dropdown-item" href="{% url 'category-posts' category.id %}">{{ category.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'index' %}#pop-up">Subscribe</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'terms' %}">Terms</a></li>
+            {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Admin</a></li>                
+            {% endif %}
+        </ul>
+        <div class="burger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+    {% if selected_category %}
+        <section class="hero">
+            <div class="hero-image">
+                <img src="{{ selected_category.image.url }}" alt="{{ selected_category.name }}">
+            </div>
+            <div class="hero-content">
+                <h1>{{ selected_category.name }}</h1><br>
+                <p>{{ selected_category.description }}</p>
+                <p>Posted on {{ selected_category.date|date:"j F, Y" }}</p>
+            </div>
+        </section>
+    {% else %}
+        <section class="hero">
+            <div class="hero-image">
+                <img src="static/images/blogs.png" alt="Blog Image">
+            </div>
+            <div class="hero-content">
+                <h1>Introduction</h1><br>
+                <p>Welcome to Prettysweetmessages, a place where we embrace spontaneity and planning. 
+                Enjoy reading and be inspired by our carefully curated blogs content!, Browse through 
+                different topics for some good blogs and also Participate in our Competitions</p>
+                <li class="nav-item category-nav-item category-dropdown">
+                    <a class="nav-link category-dropdown-toggle" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Category
+                    </a>
+                    <ul class="dropdown-menu category-dropdown-menu" aria-labelledby="categoryDropdown">
+                        {% for category in categories %}
+                            <li><a class="dropdown-item category-dropdown-item" href="{% url 'category-posts' category.id %}">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </div>
+        </section>
+    {% endif %}
+</header>
+
+    <main class="main-content">       
+        <div class="content-section">
+            <div class="post-grid">
+                {% for post in posts %}
+                <div class="post-item">
+                    <div class="post-thumbnail">
+                        {% if post.image %}
+                            <a href="{% url 'post-detail' post.pk %}">
+                                <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                            </a>
+                        {% else %}
+                            <p>No image uploaded</p>
+                        {% endif %}
+                    </div>
+                    <div class="post-content">
+                        <a href="{% url 'post-detail' post.id %}" class="post-title">{{ post.title|truncatewords:10 }}</a>
+                        <p>{{ post.content|truncatewords:8 }}</p> 
+                        <div class="post-metadata">
+                            <span class="post-author">by {{ post.author }}</span><span class="post-date"> ~  {{ post.date_posted|date:"j F, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No Blogs Posted Yet.</p>
+                {% endfor %}
+            </div>
+            {% if is_paginated %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a class="pagination-btn" href="?page=1">First</a>
+                    <a class="pagination-btn" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <a class="pagination-btn active" href="?page={{ num }}">{{ num }}</a>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a class="pagination-btn" href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <a class="pagination-btn" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a class="pagination-btn" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                {% endif %}
+            </div>
+        {% endif %}
+        </div>                
+    </main>
+
+<section  id="pop-up">
+    <div class="pop-up open"> 
+        <div class="content">
+          <div class="container">
+            <div class="dots">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>                    
+            <img src="{% static 'images/mail.png'%}" alt="Car">    
+            <div class="subscribe">
+              <h1>Subscribe to Participate in <span>Our &amp; Competitions</span>.</h1>
+              <form action="{% url 'optout' %}" method="POST">
+                {% csrf_token %}
+                <input type="email" name="email"placeholder="Your email address">
+                <input type="submit" value="Subscribe">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+</section>  
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+        function toggleMenu() {
+            var navLinks = document.getElementById("nav-links");
+            navLinks.classList.toggle("show");
+        }
+    </script>
+</body>
+</html>

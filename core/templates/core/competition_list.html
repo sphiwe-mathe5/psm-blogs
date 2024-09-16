@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="icon" href="{% static 'images/pageicon.jpg' %}">
+    <title>PSM | Competitions</title>
+</head>
+<body>
+    <div class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% if user.is_staff %}
+        <form method="post" action="{% url 'competition_list' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Create Competition">
+        </form>
+        {% endif %}
+        <h2>Current Competitions</h2>
+        {% for competition in competitions %}
+            <div class="competition">
+                <h3>Title : {{ competition.title }}</h3>
+                <p>{{ competition.description|linebreaksbr}}</p>
+                <div class="date-info">
+                    <h3 class="small-text">Start Date: {{ competition.start_date }}</h3>
+                    <h3 class="small-text">End Date: {{ competition.end_date }}</h3>
+                </div>                
+                <form action="{% url 'submit_entry' competition.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <textarea name="content" placeholder="Your Submission" required></textarea>
+                    <input type="submit" value="Submit Entry">
+                </form>
+            </div>
+        {% empty %}
+            <p>No competitions available at the moment.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+
+{% load crispy_forms_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{% static 'images/pageicon.jpg' %}">
+    <title>{% if title %}PSM - {{ title }}{% else %}PSM - New Blog{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'css/posts.css' %}">
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="form-content">
+            <h2 class="form-title">Create a New Post</h2>
+            <form method="POST" enctype="multipart/form-data" class="post-form">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="error-message">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error-message">
+                                {% for error in field.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <button class="btn-submit" type="submit" name="submit_post">Create Post</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-content">
+            <h2 class="form-title">Create a New Category</h2>
+            <form method="POST" enctype="multipart/form-data" class="category-form">
+                {% csrf_token %}
+                {% if category_form.non_field_errors %}
+                    <div class="error-message">
+                        {% for error in category_form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% for field in category_form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error-message">
+                                {% for error in field.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <button class="btn-submit" type="submit" name="submit_category">Create Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

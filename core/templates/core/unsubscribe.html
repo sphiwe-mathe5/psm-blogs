@@ -1,0 +1,99 @@
+{% load static %}
+<!doctype html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'images/pageicon.jpg' %}">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700" rel="stylesheet" />
+    <title>{% block title %}{% endblock %} Unsubscribe</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    
+    .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    header {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    
+    .form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .input-box {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    .input-box input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+    
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    button:hover {
+        background-color: #0056b3;
+    }
+  </style>    
+
+  </head>
+    <body>
+      {% if messages %}
+      <div class="messages">
+          {% for message in messages %}
+          <div class="{{ message.tags }}">
+              {{ message }}
+          </div>
+          {% endfor %}
+      </div>
+      {% endif %}
+      <section class="container">
+        <header>Submit Your Email to Unsubscribe</header>
+        <form action="{% url 'unsub' %}" class="form" method="POST" >
+          {% csrf_token %}    
+          <div class="input-box">
+            <input type="text" name="email" placeholder="Enter email address" required  />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      </section>
+    </body>
+  </html>

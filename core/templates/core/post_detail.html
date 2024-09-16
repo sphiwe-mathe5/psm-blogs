@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSM | Blogs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" href="{% static 'images/pageicon.jpg' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="{% static 'images/pageicon.png' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Baskervville+SC&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+      <nav class="navbar">
+        <a class="navbar-brand" href="{% url 'index' %}">PrettySweetMessages</a>
+
+        <ul class="navbar-nav" id="nav-links">
+            <li class="nav-item"><a class="nav-link" href="{% url 'competition_list' %}">Competitions</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">All Posts</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'index' %}#pop-up">Subscribe</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'terms' %}">Terms</a></li>
+            {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Admin</a></li>                
+            {% endif %}
+        </ul>
+        <div class="burger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+    </header>
+
+    <main class="main-content">       
+      <div class="content-section">
+          <article class="post-content">
+              <h2 class="post-title">{{ object.title }}</h2>
+  
+              {% if object.image %}
+                  <div class="post-image">
+                      <img src="{{ object.image.url }}" alt="{{ object.title }}">
+                  </div>
+                  <div class="social-media-icons">
+                    <a href="https://www.instagram.com/prettysweetmeassages?igsh=eXIpcTRuY3NvZTly" target="_blank">
+                        <img alt="Instagram" src="https://uploads-ssl.webflow.com/6672b62baa1bb8f2928d3537/66ca27afc4cb8bdb83c41a84_instagram2x.png" title="Instagram" width="32">
+                    </a>
+                    <a href="https://www.linkedin.com/" target="_blank">
+                        <img alt="Instagram" src="https://cdn.prod.website-files.com/6672b62baa1bb8f2928d3537/66e7ecf3074cbc6863101917_linkedin2x.png" title="Instagram" width="32">
+                    </a>
+                </div>
+              {% endif %}
+  
+              <div class="post-metadata">
+                  <span class="author">By <a href="#">{{ object.author }}</a></span>
+                  <span class="date">{{ object.date_posted|date:"j F, Y" }}</span>
+              </div>
+  
+              <div class="post-description">
+                <p>{{ object.content|linebreaksbr }}</p>
+            </div>              
+              {% if object.author == user %}
+                  <div class="post-actions">
+                      <a class="btn btn-secondary" href="{% url 'post-update' object.id %}">Update</a>
+                      <a class="btn btn-danger" href="{% url 'post-delete' object.id %}">Delete</a>
+                  </div>
+              {% endif %}
+          </article>
+        </main>
+        <div class="suggested-videos">
+            <h2>Keep Reading More Blogs</h2>
+            <div class="suggested-video-grid">
+                {% for post in random_suggested_videos|slice:":3" %}
+                <div class="suggested-video-item">
+                    <a href="{% url 'post-detail' post.id %}">
+                        <div class="suggested-video-thumbnail">
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                            {% endif %}
+                        </div>
+                    </a>
+                        <div class="suggested-video-info">
+                            <div class="suggested-post-title">{{ post.title|truncatewords:10 }}</div>
+                            <small class="text-muted">{{ post.date_posted|date:"d F, Y" }}</small>
+                        </div>
+                </div>
+                {% endfor %}
+            </div>
+            <section  id="pop-up">
+            <div class="pop-up open"> 
+                <div class="content">
+                  <div class="container">
+                    <div class="dots">
+                      <div class="dot"></div>
+                      <div class="dot"></div>
+                      <div class="dot"></div>
+                    </div>                    
+                    <img src="{% static 'images/mail.png'%}" alt="Car">    
+                    <div class="subscribe">
+                      <h1>Subscribe to Participate in <span>Our &amp; Competitions</span>.</h1>
+                      <form action="{% url 'optout' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="email" name="email"placeholder="Your email address">
+                        <input type="submit" value="Subscribe">
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>  
+            </div>
+            </section>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script>
+          function toggleMenu() {
+              var navLinks = document.getElementById("nav-links");
+              navLinks.classList.toggle("show");
+          }
+      </script>
+    </body>
+    </html>
