@@ -130,11 +130,12 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     os.path.join(BASE_DIR, 'credential.json'))
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_PROJECT_ID = 'civic-karma-435316-n7'
-GS_BUCKET_NAME = 'psmadmin-bucket'
+GS_PROJECT_ID = config('GS_PROJECT_ID')
+GS_BUCKET_NAME = config('GS_BUCKET_NAME')
 MEDIA_ROOT = "media/"
 UPLOAD_ROOT = 'media/uploads'
-MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+MEDIA_URL = config('MEDIA_URL')
+#MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
     
 #MEDIA_URL = '/media/'
 #MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
