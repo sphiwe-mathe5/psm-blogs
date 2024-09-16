@@ -106,3 +106,4 @@ dmypy.json
 cython_debug/
 
 .vscode/
+core/credential.json
