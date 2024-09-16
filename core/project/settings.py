@@ -126,8 +126,8 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 #STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 from google.oauth2 import service_account
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, 'credential.json'))
+#GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+#    os.path.join(BASE_DIR, 'credential.json'))
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_PROJECT_ID = config('GS_PROJECT_ID')
@@ -135,6 +135,22 @@ GS_BUCKET_NAME = config('GS_BUCKET_NAME')
 MEDIA_ROOT = "media/"
 UPLOAD_ROOT = 'media/uploads'
 MEDIA_URL = config('MEDIA_URL')
+
+
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_info({
+    "type": config("GOOGLE_CLOUD_TYPE", default="service_account"),
+    "project_id": config("GOOGLE_CLOUD_PROJECT_ID"),
+    "private_key_id": config("GOOGLE_CLOUD_PRIVATE_KEY_ID"),
+    "private_key": config("GOOGLE_CLOUD_PRIVATE_KEY").replace("\\n", "\n"),
+    "client_email": config("GOOGLE_CLOUD_CLIENT_EMAIL"),
+    "client_id": config("GOOGLE_CLOUD_CLIENT_ID"),
+    "auth_uri": config("GOOGLE_CLOUD_AUTH_URI", default="https://accounts.google.com/o/oauth2/auth"),
+    "token_uri": config("GOOGLE_CLOUD_TOKEN_URI", default="https://oauth2.googleapis.com/token"),
+    "auth_provider_x509_cert_url": config("GOOGLE_CLOUD_AUTH_PROVIDER_X509_CERT_URL", default="https://www.googleapis.com/oauth2/v1/certs"),
+    "client_x509_cert_url": config("GOOGLE_CLOUD_CLIENT_X509_CERT_URL"),
+    "universe_domain": config("GOOGLE_CLOUD_UNIVERSE_DOMAIN", default="googleapis.com")
+})
 #MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
     
 #MEDIA_URL = '/media/'
