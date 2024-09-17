@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from decouple import config, Csv
+from google.oauth2 import service_account
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_DIR = Path(__file__).resolve().parent
@@ -81,9 +82,7 @@ DATABASES = {
     }
 }
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'  # or 'bootstrap3' depending on your Bootstrap version
-
-
+CRISPY_TEMPLATE_PACK = 'bootstrap4'  
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -125,9 +124,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 #STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-from google.oauth2 import service_account
-#GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-#    os.path.join(BASE_DIR, 'credential.json'))
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_PROJECT_ID = config('GS_PROJECT_ID')
@@ -135,8 +131,6 @@ GS_BUCKET_NAME = config('GS_BUCKET_NAME')
 MEDIA_ROOT = "media/"
 UPLOAD_ROOT = 'media/uploads'
 MEDIA_URL = config('MEDIA_URL')
-
-
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_info({
     "type": config("GOOGLE_CLOUD_TYPE", default="service_account"),
@@ -151,10 +145,6 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_info({
     "client_x509_cert_url": config("GOOGLE_CLOUD_CLIENT_X509_CERT_URL"),
     "universe_domain": config("GOOGLE_CLOUD_UNIVERSE_DOMAIN", default="googleapis.com")
 })
-#MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
-    
-#MEDIA_URL = '/media/'
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -215,10 +205,6 @@ if DEBUG == False:
     SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
     SESSION_COOKIE_NAME = '__Host-sessionid'
     CSRF_COOKIE_NAME = '__Host-csrftoken'
-
-#STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-
 
 
 LOGIN_REDIRECT_URL = 'index'
